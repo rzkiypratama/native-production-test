@@ -6,12 +6,12 @@ import { useProductStore } from '../utils/axios';
 import { useCartStore } from '../store/cartStore';
 import ProductForm from './ProductsForm';
 import { Product } from '../types/productTypes';
-import { ShoppingCartOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import Cart from './Cart';
 import EditableCell from './EditableCell';
 
 const ProductsComponent: React.FC = () => {
-  const { products, fetchProducts, addProduct, editProduct, isLoading } = useProductStore();
+  const { products, fetchProducts, addProduct, editProduct, deleteProduct, isLoading } = useProductStore();
   const { addToCart, initializeCart, cart } = useCartStore();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCartVisible, setIsCartVisible] = useState(false);
@@ -50,6 +50,14 @@ const ProductsComponent: React.FC = () => {
 
   const handleAddToCart = (product: Product) => {
     addToCart(product);
+  };
+
+  const handleDeleteProduct = async (id: number) => {
+    try {
+      await deleteProduct(id);
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
   };
 
   const isEditing = (record: Product) => record.id === editingKey;
@@ -141,11 +149,16 @@ const ProductsComponent: React.FC = () => {
             ) : (
               <div className='flex gap-2 justify-center items-center'>
                 <Button disabled={editingKey !== ''} onClick={() => edit(record)}>
-                  Edit
+                <EditOutlined />
                 </Button>
                 <Button onClick={() => handleAddToCart(record)}>
                   <ShoppingCartOutlined />
                 </Button>
+                <Popconfirm title="Are you sure to delete?" onConfirm={() => handleDeleteProduct(record.id)}>
+                  <Button>
+                <DeleteOutlined style={{ color: 'red' }}/>
+                  </Button>
+                </Popconfirm>
               </div>
             )}
           </div>
