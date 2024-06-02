@@ -2,8 +2,6 @@
 
 import React from 'react';
 import ProductsComponent from '../components/Products';
-import ProductForm from '../components/ProductsForm';
-import Cart from '../components/Cart';
 
 const Home: React.FC = () => {
   return (
