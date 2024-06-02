@@ -22,8 +22,8 @@ const Cart: React.FC = () => {
             ]}
           >
             <List.Item.Meta
-              title={item.title}
-              description={`Price: ${item.price}`}
+              title={`${item.title} (x${item.quantity})`}
+              description={`Price: ${item.price} | Total: ${item.price * item.quantity}`}
             />
           </List.Item>
         )}
