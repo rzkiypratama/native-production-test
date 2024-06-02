@@ -8,6 +8,7 @@ interface ProductState {
   fetchProducts: () => Promise<void>;
   addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
   editProduct: (product: Product) => Promise<void>;
+  deleteProduct: (id: number) => Promise<void>;
 }
 
 export const useProductStore = create<ProductState>((set) => ({
@@ -53,6 +54,16 @@ editProduct: async (product: Product) => {
       }));
     } catch (error) {
       console.error('Failed to update product:', error);
+    }
+  },
+  deleteProduct: async (id: number) => {
+    try {
+      await axios.delete(`https://api.escuelajs.co/api/v1/products/${id}`);
+      set((state) => ({
+        products: state.products.filter((product) => product.id !== id),
+      }));
+    } catch (error) {
+      console.error('Failed to delete product:', error);
     }
   },
 }));
