@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input, Button } from 'antd';
-import { Product } from '../types/product';
+import { Product } from '../types/productTypes';
 import { productSchema } from '@/schemas/products';
 
 type ProductFormInputs = Omit<Product, 'id'>;
