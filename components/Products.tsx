@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Spin, Form, Typography, Popconfirm, Badge } from 'antd';
-import { useProductStore } from '../store/useProducts';
+import { useProductStore } from '../utils/axios';
 import { useCartStore } from '../store/cartStore';
 import ProductForm from './ProductsForm';
 import { Product } from '../types/productTypes';
