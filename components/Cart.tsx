@@ -16,10 +16,10 @@ const Cart: React.FC = () => {
         renderItem={({ product, quantity }) => (
           <List.Item
             actions={[
-              <Button onClick={() => removeFromCart(product.id)} type="link">
+              <Button key="remove" onClick={() => removeFromCart(product.id)} type="link">
                 <DeleteOutlined style={{ color: 'red' }} />
               </Button>,
-              <Button onClick={() => removeAllOfProductFromCart(product.id)} type="link" danger>
+              <Button key="removeAll" onClick={() => removeAllOfProductFromCart(product.id)} type="link" danger>
                 Remove All
               </Button>,
             ]}
