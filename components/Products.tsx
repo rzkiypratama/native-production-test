@@ -124,7 +124,7 @@ const ProductsComponent: React.FC = () => {
       dataIndex: 'images',
       key: 'images',
       width: '15%',
-      editable: false,
+      editable: true,
       render: (images: string[]) => Array.isArray(images) ? images.join(', ') : '',
     },
     {
