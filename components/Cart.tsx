@@ -31,9 +31,11 @@ const Cart: React.FC = () => {
           </List.Item>
         )}
       />
-       <Button onClick={removeAllFromCart} type="primary" danger className='mb-4'>
-        Remove All
-      </Button>
+       {cart.length > 1 && (
+        <Button onClick={removeAllFromCart} type="primary" danger className='mb-4'>
+          Remove All
+        </Button>
+      )}
     </div>
   );
 };
