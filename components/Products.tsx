@@ -68,9 +68,9 @@ const ProductsComponent: React.FC = () => {
     try {
       await addProduct(data);
       setIsModalVisible(false);
-      toast.success("New data added successfully")
+      toast.success("New data added successfully");
     } catch (error) {
-      toast.error("Failed to add new data")
+      toast.error("Failed to add new data");
       console.error("Error adding product:", error);
     }
   };
@@ -82,9 +82,9 @@ const ProductsComponent: React.FC = () => {
   const handleDeleteProduct = async (id: number) => {
     try {
       await deleteProduct(id);
-      toast.success("Delete product success")
+      toast.success("Delete product success");
     } catch (error) {
-      toast.error("Delete product failed")
+      toast.error("Delete product failed");
       console.error("Error deleting product:", error);
     }
   };
@@ -105,10 +105,10 @@ const ProductsComponent: React.FC = () => {
       const row = await form.validateFields();
       const updatedProduct = { ...row, id } as Product;
       await editProduct(updatedProduct);
-      toast.success("Edit data success")
+      toast.success("Edit data success");
       setEditingKey("");
     } catch (errInfo) {
-      toast.success("Edit data error")
+      toast.success("Edit data error");
       console.log("Validate Failed:", errInfo);
     }
   };
@@ -184,7 +184,7 @@ const ProductsComponent: React.FC = () => {
                 </span>
               </>
             ) : (
-              <div className="flex gap-2 justify-center items-center">
+              <div className="flex items-center justify-center gap-2">
                 <Button
                   disabled={editingKey !== ""}
                   onClick={() => edit(record)}
@@ -232,7 +232,7 @@ const ProductsComponent: React.FC = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <Button onClick={handleCreate} type="primary" className="mb-4 mt-4">
           Create Product
         </Button>
@@ -245,12 +245,12 @@ const ProductsComponent: React.FC = () => {
           />
         </Badge>
       </div>
-      <div className="flex justify-center items-center min-h-96">
+      <div className="flex min-h-96 items-center justify-center">
         {isLoading ? (
-          <Spin/>
+          <Spin />
         ) : (
           <Form form={form} component={false}>
-            <div className="bg-white rounded-md">
+            <div className="rounded-md bg-white">
               <Table<Product>
                 components={{
                   body: {
@@ -289,16 +289,16 @@ const ProductsComponent: React.FC = () => {
       </Modal>
 
       <ToastContainer
-          position="top-center"
-          autoClose={2500}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          theme="dark"
-        />
+        position="top-center"
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        theme="dark"
+      />
     </div>
   );
 };

@@ -20,7 +20,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit }) => {
     handleSubmit,
     formState: { errors },
     setValue,
-    reset
+    reset,
   } = useForm<ProductFormInputs>({
     resolver: zodResolver(productSchema),
     defaultValues: initialData || {
@@ -94,20 +94,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit }) => {
           name="images.0"
           control={control}
           render={({ field }) => (
-            <div className="pt-1 pb-3">
+            <div className="pb-3 pt-1">
               <Input {...field} style={{ display: "none" }} />
-             <input
+              <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleFileChange(0, e.target.files)}
                 className="bg-t bg-transparent"
-                />
+              />
             </div>
           )}
         />
       </div>
       <Button type="primary" htmlType="submit" disabled={isSubmitting}>
-        {isSubmitting ? <Spin /> : 'Submit'}
+        {isSubmitting ? <Spin /> : "Submit"}
       </Button>
     </form>
   );

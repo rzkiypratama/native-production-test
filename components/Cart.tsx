@@ -1,25 +1,39 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useCartStore } from '../store/cartStore';
-import { Button, List } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import React from "react";
+import { useCartStore } from "../store/cartStore";
+import { Button, List } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 const Cart: React.FC = () => {
-  const { cart, removeFromCart, removeAllFromCart, removeAllOfProductFromCart } = useCartStore();
+  const {
+    cart,
+    removeFromCart,
+    removeAllFromCart,
+    removeAllOfProductFromCart,
+  } = useCartStore();
 
   return (
-    <div className='bg bg-white'>
+    <div className="bg bg-white">
       <h2>Cart</h2>
       <List
         dataSource={cart}
         renderItem={({ product, quantity }) => (
           <List.Item
             actions={[
-              <Button key="remove" onClick={() => removeFromCart(product.id)} type="link">
-                <DeleteOutlined style={{ color: 'red' }} />
+              <Button
+                key="remove"
+                onClick={() => removeFromCart(product.id)}
+                type="link"
+              >
+                <DeleteOutlined style={{ color: "red" }} />
               </Button>,
-              <Button key="removeAll" onClick={() => removeAllOfProductFromCart(product.id)} type="link" danger>
+              <Button
+                key="removeAll"
+                onClick={() => removeAllOfProductFromCart(product.id)}
+                type="link"
+                danger
+              >
                 Remove All
               </Button>,
             ]}
@@ -31,8 +45,13 @@ const Cart: React.FC = () => {
           </List.Item>
         )}
       />
-       {cart.length > 1 && (
-        <Button onClick={removeAllFromCart} type="primary" danger className='mb-4'>
+      {cart.length > 1 && (
+        <Button
+          onClick={removeAllFromCart}
+          type="primary"
+          danger
+          className="mb-4"
+        >
           Remove All
         </Button>
       )}
