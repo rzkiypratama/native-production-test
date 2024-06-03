@@ -1,22 +1,47 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Spin, Form, Typography, Popconfirm, Badge } from 'antd';
-import { useProductStore } from '../utils/axios';
-import { useCartStore } from '../store/cartStore';
-import ProductForm from './ProductsForm';
-import { Product } from '../types/productTypes';
-import { ShoppingCartOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import Cart from './Cart';
-import EditableCell from './EditableCell';
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  Button,
+  Modal,
+  Spin,
+  Form,
+  Typography,
+  Popconfirm,
+  Badge,
+} from "antd";
+import { useProductStore } from "../utils/axios";
+import { useCartStore } from "../store/cartStore";
+import ProductForm from "./ProductsForm";
+import { Product } from "../types/productTypes";
+import {
+  ShoppingCartOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
+import Cart from "./Cart";
+import EditableCell from "./EditableCell";
+import { useTheme } from "next-themes";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ProductsComponent: React.FC = () => {
-  const { products, fetchProducts, addProduct, editProduct, deleteProduct, isLoading } = useProductStore();
+  const {
+    products,
+    fetchProducts,
+    addProduct,
+    editProduct,
+    deleteProduct,
+    isLoading,
+  } = useProductStore();
   const { addToCart, initializeCart, cart } = useCartStore();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCartVisible, setIsCartVisible] = useState(false);
   const [form] = Form.useForm();
-  const [editingKey, setEditingKey] = useState<number | ''>('');
+  const [editingKey, setEditingKey] = useState<number | "">("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     fetchProducts();
@@ -26,7 +51,7 @@ const ProductsComponent: React.FC = () => {
   const handleCreate = () => {
     setIsModalVisible(true);
   };
-  
+
   const handleModalClose = () => {
     setIsModalVisible(false);
   };
@@ -39,12 +64,14 @@ const ProductsComponent: React.FC = () => {
     setIsCartVisible(false);
   };
 
-  const handleFormSubmit = async (data: Omit<Product, 'id'>) => {
+  const handleFormSubmit = async (data: Omit<Product, "id">) => {
     try {
       await addProduct(data);
       setIsModalVisible(false);
+      toast.success("New data added successfully")
     } catch (error) {
-      console.error('Error adding product:', error);
+      toast.error("Failed to add new data")
+      console.error("Error adding product:", error);
     }
   };
 
@@ -55,8 +82,10 @@ const ProductsComponent: React.FC = () => {
   const handleDeleteProduct = async (id: number) => {
     try {
       await deleteProduct(id);
+      toast.success("Delete product success")
     } catch (error) {
-      console.error('Error deleting product:', error);
+      toast.error("Delete product failed")
+      console.error("Error deleting product:", error);
     }
   };
 
@@ -68,7 +97,7 @@ const ProductsComponent: React.FC = () => {
   };
 
   const cancel = () => {
-    setEditingKey('');
+    setEditingKey("");
   };
 
   const save = async (id: number) => {
@@ -76,60 +105,64 @@ const ProductsComponent: React.FC = () => {
       const row = await form.validateFields();
       const updatedProduct = { ...row, id } as Product;
       await editProduct(updatedProduct);
-      setEditingKey('');
+      toast.success("Edit data success")
+      setEditingKey("");
     } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
+      toast.success("Edit data error")
+      console.log("Validate Failed:", errInfo);
     }
   };
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: '5%',
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      width: "5%",
       editable: false,
     },
     {
-      title: 'Title',
-      dataIndex: 'title',
-      key: 'title',
-      width: '20%',
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+      width: "20%",
       editable: true,
       filters: products.map((product) => ({
         text: product.title,
         value: product.title,
       })),
-      onFilter: (value: string | number | boolean, record: Product) => record.title.includes(value as string),
+      onFilter: (value: string | number | boolean, record: Product) =>
+        record.title.includes(value as string),
       filterSearch: true,
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      width: '10%',
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      width: "10%",
       editable: true,
       sorter: (a: Product, b: Product) => a.price - b.price,
       render: (price: number) => <span>{price}</span>,
     },
     {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      width: '35%',
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      width: "35%",
       editable: true,
     },
     {
-      title: 'Images',
-      dataIndex: 'images',
-      key: 'images',
-      width: '15%',
+      title: "Images",
+      dataIndex: "images",
+      key: "images",
+      width: "15%",
       editable: true,
-      render: (images: string[]) => Array.isArray(images) ? images.join(', ') : '',
+      render: (images: string[]) =>
+        Array.isArray(images) ? images.join(", ") : "",
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       ellipsis: true,
       render: (_: any, record: Product) => {
         const editable = isEditing(record);
@@ -138,8 +171,12 @@ const ProductsComponent: React.FC = () => {
             {editable ? (
               <>
                 <span>
-                  <Typography.Link onClick={() => save(record.id)} style={{ marginRight: 8 }}>
-                    Save
+                  <Typography.Link
+                    onClick={() => save(record.id)}
+                    style={{ marginRight: 8 }}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? <Spin /> : "Save"}
                   </Typography.Link>
                   <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                     <a>Cancel</a>
@@ -147,16 +184,22 @@ const ProductsComponent: React.FC = () => {
                 </span>
               </>
             ) : (
-              <div className='flex gap-2 justify-center items-center'>
-                <Button disabled={editingKey !== ''} onClick={() => edit(record)}>
-                <EditOutlined />
+              <div className="flex gap-2 justify-center items-center">
+                <Button
+                  disabled={editingKey !== ""}
+                  onClick={() => edit(record)}
+                >
+                  <EditOutlined />
                 </Button>
                 <Button onClick={() => handleAddToCart(record)}>
                   <ShoppingCartOutlined />
                 </Button>
-                <Popconfirm title="Are you sure to delete?" onConfirm={() => handleDeleteProduct(record.id)}>
+                <Popconfirm
+                  title="Are you sure to delete?"
+                  onConfirm={() => handleDeleteProduct(record.id)}
+                >
                   <Button>
-                <DeleteOutlined style={{ color: 'red' }}/>
+                    <DeleteOutlined style={{ color: "red" }} />
                   </Button>
                 </Popconfirm>
               </div>
@@ -175,7 +218,7 @@ const ProductsComponent: React.FC = () => {
       ...col,
       onCell: (record: Product) => ({
         record,
-        inputType: col.dataIndex === 'price' ? 'number' : 'text',
+        inputType: col.dataIndex === "price" ? "number" : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
@@ -184,41 +227,53 @@ const ProductsComponent: React.FC = () => {
   });
 
   const onChange = (pagination: any, filters: any, sorter: any) => {
-    console.log('params', pagination, filters, sorter);
+    console.log("params", pagination, filters, sorter);
   };
 
   return (
     <div>
-      <div className='flex justify-between items-center'>
-        <Button onClick={handleCreate} type="primary" className='mb-4 mt-4'>
+      <div className="flex justify-between items-center">
+        <Button onClick={handleCreate} type="primary" className="mb-4 mt-4">
           Create Product
         </Button>
         <Badge count={cart.reduce((total, item) => total + item.quantity, 0)}>
-          <Button onClick={handleCart} type="primary" shape="circle" icon={<ShoppingCartOutlined />} />
+          <Button
+            onClick={handleCart}
+            type="primary"
+            shape="circle"
+            icon={<ShoppingCartOutlined />}
+          />
         </Badge>
       </div>
-      <div className='flex justify-center items-center min-h-96'>
+      <div className="flex justify-center items-center min-h-96">
         {isLoading ? (
-          <Spin tip="Loading..." />
+          <Spin/>
         ) : (
           <Form form={form} component={false}>
-            <Table<Product>
-              components={{
-                body: {
-                  cell: EditableCell,
-                },
-              }}
-              bordered
-              dataSource={products}
-              columns={mergedColumns as any}
-              rowClassName="editable-row"
-              pagination={{ pageSize: 5, onChange: cancel }}
-              rowKey={(record) => record.id}
-              onChange={onChange}
-            />
+            <div className="bg-white rounded-md">
+              <Table<Product>
+                components={{
+                  body: {
+                    cell: EditableCell,
+                  },
+                }}
+                bordered
+                dataSource={products}
+                columns={mergedColumns as any}
+                rowClassName={() =>
+                  theme === "dark"
+                    ? "bg-[#31363F] text-white hover:text-[#333]"
+                    : "bg-white text-black"
+                }
+                pagination={{ pageSize: 5, onChange: cancel }}
+                rowKey={(record) => record.id}
+                onChange={onChange}
+              />
+            </div>
           </Form>
         )}
       </div>
+      {/* modal for open create product */}
       <Modal
         title="Create Product"
         open={isModalVisible}
@@ -227,13 +282,23 @@ const ProductsComponent: React.FC = () => {
       >
         <ProductForm onSubmit={handleFormSubmit} />
       </Modal>
-      <Modal
-        open={isCartVisible}
-        onCancel={handleCartClose}
-        footer={null}
-      >
+
+      {/* modal for open cart */}
+      <Modal open={isCartVisible} onCancel={handleCartClose} footer={null}>
         <Cart />
       </Modal>
+
+      <ToastContainer
+          position="top-center"
+          autoClose={2500}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          theme="dark"
+        />
     </div>
   );
 };
