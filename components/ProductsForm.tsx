@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input, Button } from "antd";
+import { Input, Button, Upload, Spin } from "antd";
 import { Product } from "../types/productTypes";
 import { productSchema } from "@/schemas/products";
+import { UploadOutlined } from "@ant-design/icons";
 
 type ProductFormInputs = Omit<Product, "id">;
 
@@ -13,11 +14,13 @@ type ProductFormProps = {
 };
 
 const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
     setValue,
+    reset
   } = useForm<ProductFormInputs>({
     resolver: zodResolver(productSchema),
     defaultValues: initialData || {
@@ -37,8 +40,18 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit }) => {
     }
   };
 
+  const onSubmitForm = async (data: ProductFormInputs) => {
+    setIsSubmitting(true);
+    try {
+      await onSubmit(data);
+      reset();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmitForm)}>
       <div>
         <label>Title</label>
         <Controller
@@ -81,19 +94,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit }) => {
           name="images.0"
           control={control}
           render={({ field }) => (
-            <>
+            <div className="pt-1 pb-3">
               <Input {...field} style={{ display: "none" }} />
-              <input
+             <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleFileChange(0, e.target.files)}
-              />
-            </>
+                className="bg-t bg-transparent"
+                />
+            </div>
           )}
         />
       </div>
-      <Button type="primary" htmlType="submit">
-        Submit
+      <Button type="primary" htmlType="submit" disabled={isSubmitting}>
+        {isSubmitting ? <Spin /> : 'Submit'}
       </Button>
     </form>
   );
