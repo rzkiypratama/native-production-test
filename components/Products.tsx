@@ -12,7 +12,9 @@ import {
   Badge,
 } from "antd";
 import { useProductStore } from "../utils/axios";
-import { useCartStore } from "../store/cartStore";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../store";
+import { addToCart, initializeCart } from "../store/cartStore";
 import ProductForm from "./ProductsForm";
 import { Product } from "../types/productTypes";
 import {
@@ -35,7 +37,10 @@ const ProductsComponent: React.FC = () => {
     deleteProduct,
     isLoading,
   } = useProductStore();
-  const { addToCart, initializeCart, cart } = useCartStore();
+
+  const dispatch = useDispatch<AppDispatch>();
+  const cart = useSelector((state: RootState) => state.cart.cart);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isCartVisible, setIsCartVisible] = useState(false);
   const [form] = Form.useForm();
@@ -45,8 +50,8 @@ const ProductsComponent: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
-    initializeCart();
-  }, [fetchProducts, initializeCart]);
+    dispatch(initializeCart());
+  }, [fetchProducts, dispatch]);
 
   const handleCreate = () => {
     setIsModalVisible(true);
@@ -76,7 +81,7 @@ const ProductsComponent: React.FC = () => {
   };
 
   const handleAddToCart = (product: Product) => {
-    addToCart(product);
+    dispatch(addToCart(product));
   };
 
   const handleDeleteProduct = async (id: number) => {
