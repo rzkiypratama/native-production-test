@@ -2,7 +2,6 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode } from 'react';
-import { useCartStore } from '../store/cartStore';
 
 const queryClient = new QueryClient();
 
