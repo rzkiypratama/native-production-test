@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input, Button, Upload, Spin } from "antd";
 import { Product } from "../types/productTypes";
 import { productSchema } from "@/schemas/products";
-import { UploadOutlined } from "@ant-design/icons";
 
 type ProductFormInputs = Omit<Product, "id">;
 
